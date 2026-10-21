@@ -1,0 +1,15 @@
+{
+  "name": "panpan-qianghao",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "monitor": "node src/monitor.js",
+    "once": "node src/monitor.js --once",
+    "page": "node src/server.js",
+    "fetch": "node -e \"import('./src/lib/fetchGoods.js').then(m=>m.fetchFilteredGoods().then(d=>{console.log('命中',d.total,'/',d.totalRaw); for (const g of d.list) console.log(g.price,g.id,g.subtitle,g.title.slice(0,40))}))\""
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}

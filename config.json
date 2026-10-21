@@ -1,0 +1,19 @@
+{
+  "gameId": 231,
+  "goodsCatalogueId": 6,
+  "pollIntervalSec": 60,
+  "headless": true,
+  "port": 3780,
+  "action": {
+    "metas": {
+      "single1": ["6406"]
+    },
+    "single6": "7607",
+    "single5": "12986"
+  },
+  "filters": {
+    "accountType": "QQ",
+    "realName": "可二次实名",
+    "accountStatus": "无封号"
+  }
+}

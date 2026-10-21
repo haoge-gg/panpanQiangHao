@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>盼之筛选 · QQ / 可二次实名 / 无封号</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a222c;
+      --line: #2a3542;
+      --text: #e8eef5;
+      --muted: #8b9aab;
+      --accent: #e85d4c;
+      --accent-soft: rgba(232, 93, 76, 0.14);
+      --ok: #3ecf8e;
+      --warn: #f0b429;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #243044 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #2a1f28 0%, transparent 50%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      padding: 28px 28px 12px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .tag {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(232, 93, 76, 0.35);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .toolbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 28px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+    button.ghost {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .stats {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .stat strong { color: var(--ok); font-size: 18px; }
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 28px 40px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .15s, transform .15s;
+    }
+    .card:hover {
+      border-color: rgba(232, 93, 76, 0.45);
+      transform: translateY(-1px);
+    }
+    .card-body { padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .price {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .price small {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-left: 6px;
+      text-decoration: line-through;
+    }
+    .title {
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 3.9em;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #243041;
+      color: var(--muted);
+    }
+    .chip.ok { color: var(--ok); background: rgba(62, 207, 142, 0.12); }
+    .id {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .actions {
+      margin-top: auto;
+      padding-top: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .actions a {
+      text-decoration: none;
+      color: #fff;
+      background: #2b3645;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .actions a.primary { background: var(--accent); }
+    .empty, .err {
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+    }
+    .err { color: var(--warn); }
+    .labels { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>筛选商品数据</h1>
+    <p class="sub">无畏契约 · 成品号 · 对齐你勾选的三项条件</p>
+    <div class="tags">
+      <span class="tag">账号类型：QQ</span>
+      <span class="tag">实名：可二次实名</span>
+      <span class="tag">状态：无封号</span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button id="btnRefresh" type="button">刷新数据</button>
+    <button id="btnAuto" class="ghost" type="button">开启自动刷新</button>
+    <div class="stats meta" id="stats">等待加载…</div>
+  </div>
+
+  <main>
+    <div id="content" class="empty">正在拉取…</div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let autoTimer = null;
+
+    function yuan(n) {
+      if (!Number.isFinite(n)) return "-";
+      return "¥" + n.toLocaleString("zh-CN");
+    }
+
+    function render(data) {
+      const list = data.list || [];
+      $("stats").innerHTML = `
+        <span class="stat">命中 <strong>${list.length}</strong></span>
+        <span>原始 ${data.totalRaw ?? "-"} 条</span>
+        <span>来源 ${data.source || "-"}</span>
+        <span>更新 ${data.at ? new Date(data.at).toLocaleString() : "-"}</span>
+      `;
+
+      if (!list.length) {
+        $("content").className = "empty";
+        $("content").textContent = "当前没有命中「QQ + 可二次实名 + 无封号」的商品（首屏 SSR 约 10 条内）。点刷新再试。";
+        return;
+      }
+
+      $("content").className = "grid";
+      $("content").innerHTML = list.map((g) => `
+        <article class="card">
+          <div class="card-body">
+            <div class="price">${yuan(g.price)}${g.originalPrice && g.originalPrice > g.price ? `<small>${yuan(g.originalPrice)}</small>` : ""}</div>
+            <div class="id">${g.id}</div>
+            <div class="title">${escapeHtml(g.title)}</div>
+            <div class="row">
+              <span class="chip ok">${escapeHtml(g.simpleMessage || "")}</span>
+              <span class="chip ok">${escapeHtml(g.subtitle || "")}</span>
+              ${g.bargain ? '<span class="chip">可砍价</span>' : ""}
+            </div>
+            ${g.labels?.length ? `<div class="labels">${escapeHtml(g.labels.slice(0, 8).join(" · "))}</div>` : ""}
+            <div class="actions">
+              <a class="primary" href="${g.url}" target="_blank" rel="noopener">打开详情</a>
+              <a href="${g.url}" target="_blank" rel="noopener">复制编号：${g.id}</a>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    async function load(force = false) {
+      const btn = $("btnRefresh");
+      btn.disabled = true;
+      btn.textContent = "拉取中…";
+      try {
+        const url = force ? "/api/goods?refresh=1" : "/api/goods";
+        const res = await fetch(url);
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || res.statusText);
+        render(json);
+      } catch (e) {
+        $("content").className = "err";
+        $("content").textContent = "加载失败：" + (e.message || e);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "刷新数据";
+      }
+    }
+
+    $("btnRefresh").onclick = () => load(true);
+    $("btnAuto").onclick = () => {
+      if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        $("btnAuto").textContent = "开启自动刷新";
+        return;
+      }
+      $("btnAuto").textContent = "停止自动刷新";
+      autoTimer = setInterval(() => load(true), 60000);
+    };
+
+    load(true);
+  </script>
+</body>
+</html>
